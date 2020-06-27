@@ -11,29 +11,29 @@
 	* `变量名='变量值'`
 		* 变量值使用`''`单引号时，**所进即所得**
 		```bash
-		➜  ~ username="小花花"
-		➜  ~ echo $username
+		[root@root-aliyun ~]$ username="小花花"
+		[root@root-aliyun ~]$ echo $username
 		小花花
-		➜  ~ powerful='the best powerful man is $username'
-		➜  ~ echo $powerful
+		[root@root-aliyun ~]$ powerful='the best powerful man is $username'
+		[root@root-aliyun ~]$ echo $powerful
 		# 当变量值使用单引号时，不会引用变量值中所引用的变量的值(即所进及所得)
 		the best powerful man is $username
 		```
 * 方式二
 	* `变量名="变量值"`
 		```bash
-		➜  ~ username="小花花"
-		➜  ~ echo $username
+		[root@root-aliyun ~]$ username="小花花"
+		[root@root-aliyun ~]$ echo $username
 		小花花
-		➜  ~ handsome="the best handsome person is $username"
-		➜  ~ echo $handsome
+		[root@root-aliyun ~]$ handsome="the best handsome person is $username"
+		[root@root-aliyun ~]$ echo $handsome
 		the best handsome person is 小花花
 		```
 * 方式三
     * `变量名=$(Linux命令)`，**比较常用**
     ```bash
-    ➜  ~ output=$(ll /opt)
-    ➜  ~ echo $output     
+    [root@root-aliyun ~]$ output=$(ll /opt)
+    [root@root-aliyun ~]$ echo $output     
     总用量 44K
     drwxr-xr-x 6 root root 4.0K 2月  14  2018 allure-2.6.0
     drwxrwxr-x 5 root root 4.0K 4月  12 14:27 baidunetdisk
@@ -81,22 +81,22 @@
 * 方式一(**在终端bash界面中最常用**)
     * `echo "$变量名"`
         ```bash
-        ➜  ~ username="小花"  
-        ➜  ~ echo "$username" 
+        [root@root-aliyun ~]$ username="小花"  
+        [root@root-aliyun ~]$ echo "$username" 
         小花
         ```
 * 方式二(**在终端bash界面中最常用**)
     * `echo $变量名`
         ```bash
-        ➜  ~ username="熊二"
-        ➜  ~ echo $username
+        [root@root-aliyun ~]$ username="熊二"
+        [root@root-aliyun ~]$ echo $username
         熊二
         ```
 * 方式三(在终端bash界面可以使用**但在写bash脚本时必须用这种方式**)
     * `echo "${变量名}"`
         ```bash
-        ➜  ~ username="熊大"
-        ➜  ~ echo "${username}"
+        [root@root-aliyun ~]$ username="熊大"
+        [root@root-aliyun ~]$ echo "${username}"
         熊大
         ```
 ## 内置变量
@@ -104,6 +104,20 @@
 * `$n`:获取当前执行的shell脚本的第n个参数值，n=1—>9，如果n>9就要用大括号括起来。
 * `$#`:获取当前shell命令行中参数的总个数
 * `$?`:获取执行上一个指令的返回值(0为成功，非0为失败)
+    * `0`为`成功`
+        ```bash
+        [root@root-aliyun ~]$ ls log 
+        Deepin-QQ.log  kill.sh.log  run.sh.log
+        [root@root-aliyun ~]$ echo "$?"
+        0
+        ```
+    * `非0`即为`失败`
+        ```bash
+        [root@root-aliyun ~]$ cat haha.txt
+        cat: haha.txt: 没有那个文件或目录
+        [root@root-aliyun ~]$ echo "$?"   
+        1
+        ```
 * `$USER`
     * `echo "$USER"`：获取当前登录用户
 * `$PWD`
@@ -112,3 +126,208 @@
     * `echo "$HOME"`：获取当前家目录的路径
 * `$SHELL`
     * `echo "$SHELL"`：获取`shell`的路径
+# 数值运算
+## 支持的运算符
+支持`+`,`-`,`*`,`/`,`%`,`<`,`<=`,`>`,`>=`,`=`,`!=`运算
+## 数值运算表达式
+* 表达式一(**最常用**)
+    * `$((算术表达式))`，算术表达式中引用的变量前面的`$`可选
+        ```bash
+        [root@root-aliyun ~]$ echo "$((2 * 3))"
+        6
+        [root@root-aliyun ~]$ num1=60
+        [root@root-aliyun ~]$ num2=30
+        [root@root-aliyun ~]$ echo "$(($num1 / $num2))"
+        2
+        [root@root-aliyun ~]$ echo "$((num1 / num2))" 
+        2
+        ```
+* 表达式二
+    * `expr` 算术表达式
+        ```bash
+        [root@root-aliyun ~]$ echo "$num1"                  
+        60
+        [root@root-aliyun ~]$ echo "$num2"                  
+        30
+        [root@root-aliyun ~]$ echo "$(expr $num1 \* $num2)" 
+        1800
+        [root@root-aliyun ~]$ echo "$(expr $num1 \+ $num2)" 
+        90
+        [root@root-aliyun ~]$ echo "$(expr $num1 \- $num2)" 
+        30
+        [root@root-aliyun ~]$ echo "$(expr $num1 \% $num2)" 
+        0
+        ```
+# 条件表达式
+使用`[ 条件表达式 ]`来定义，条件表达式与`[]`两侧必须用**空格**隔开
+## 返回值
+* 条件`成立`，返回`0`
+    ```bash
+    [root@root-aliyun ~]$ [ 1 == 1 ]
+    [root@root-aliyun ~]$ echo "$?"
+    0
+    ```
+* 条件`不成立`，返回`1`
+    ```bash
+    [root@root-aliyun ~]$ [ 1 == 15 ]
+    [root@root-aliyun ~]$ echo "$?"
+    1
+    ```
+## 逻辑表达式
+* `&&`和`||`:`&&`相当于Python逻辑表达式中的`and`，`||`相当于Python逻辑表达式中的`or`。
+    ```bash
+    [root@root-aliyun ~]$ [ 5 == 5 ] && echo "true"
+    true
+    [root@root-aliyun ~]$ [ 5 == 5 ] || echo "true"
+    [root@root-aliyun ~]$ [ 5 == 15 ] || echo "false"
+    false
+    [root@root-aliyun ~]$ [ 5 == 5 ] && echo "true" || echo "false"
+    true
+    [root@root-aliyun ~]$ [ 5 == 6 ] && echo "true" || echo "false"
+    false
+    [root@root-aliyun ~]$ [ 5 != 6 ] && echo "true" || echo "false"
+    true
+    [root@root-aliyun ~]$ user="熊大"
+    [root@root-aliyun ~]$ [ "${user}" == "熊大" ] && echo "YES" || echo "NO"
+    YES
+    [root@root-aliyun ~]$ [ "${user}" == "熊二" ] && echo "YES" || echo "NO"
+    NO
+    [root@root-aliyun ~]$ [ "${user}" != "熊二" ] && echo "YES" || echo "NO"
+    YES
+    ```
+## 文件表达式
+* `-f`:判断输入内容是否是一个文件
+    ```bash
+    [root@root-aliyun ~]$ ll
+    总用量 20
+    -rw-rw-r-- 1 root root 7566 6月  26 11:19 a.txt
+    -rw-rw-r-- 1 root root  924 6月  26 12:40 case.log
+    drwxrwxr-x 2 root root 4096 6月  27 19:15 haha
+    -rw-rw-r-- 1 root root   47 6月  26 13:13 language.txt
+    [root@root-aliyun ~]$ [ -f "language.txt" ] && echo "是文件" || echo "不是文件"
+    是文件
+    [root@root-aliyun ~]$ [ -f "haha/" ] && echo "是文件" || echo "不是文件"
+    不是文件
+    [root@root-aliyun ~]$ [ -f "haha" ] && echo "是文件" || echo "不是文件"
+    不是文件
+    [root@root-aliyun ~]$ 
+    ```
+* `-d`:判断输入内容是否是一个目录
+    ```bash
+    [root@root-aliyun ~]$ ll
+    总用量 20
+    -rw-rw-r-- 1 root root 7566 6月  26 11:19 a.txt
+    -rw-rw-r-- 1 root root  924 6月  26 12:40 case.log
+    drwxrwxr-x 2 root root 4096 6月  27 19:15 haha
+    -rw-rw-r-- 1 root root   47 6月  26 13:13 language.txt
+    [root@root-aliyun ~]$ [ -d "haha" ] && echo "是一个目录" || echo "不是一个目录"
+    是一个目录
+    [root@root-aliyun ~]$ [ -d "language.txt" ] && echo "是一个目录" || echo "不是一个目录"
+    不是一个目录
+    ```
+* `-x`:判断输入内容是否可执行
+    ```bash
+    [root@root-aliyun ~]$ ll
+    总用量 20
+    -rw-rw-r-- 1 root root 7566 6月  26 11:19 a.txt
+    -rw-rw-r-- 1 root root  924 6月  26 12:40 case.log
+    drwxrwxr-x 2 root root 4096 6月  27 19:15 haha
+    -rw-rw-r-- 1 root root   47 6月  26 13:13 language.txt
+    [root@root-aliyun ~]$ [ -x "haha" ] && echo "有可执行权限" || echo "没有可执行 权限"
+    有可执行权限
+    [root@root-aliyun ~]$ [ -x "language.txt" ] && echo "有可执行权限" || echo "没 有可执行权限"
+    没有可执行权限
+    [root@root-aliyun ~]$
+    ```
+* `-e`:判断文件是否存在
+    ```bash
+    [root@root-aliyun ~]$ ls
+    a.txt  case.log  language.txt  test.txt
+    [root@root-aliyun ~]$ [ -e "test.txt" ] && echo "文件存在" || echo "文件不存在"
+    文件存在
+    [root@root-aliyun ~]$ rm -rf test.txt 
+    [root@root-aliyun ~]$ [ -e "test.txt" ] && echo "文件存在" || echo "文件不存在"
+    文件不存在
+    ```
+## 数值操作符
+* `n1 -eq n2`:判断`n1`和`n2`是否相等
+    ```bash
+    [root@root-aliyun ~]$ num1=45
+    [root@root-aliyun ~]$ num2=45
+    [root@root-aliyun ~]$ [ "${num1}" -eq "${num2}" ] && echo "num1==num2:"${num1}"=="${num2}"" || echo "num1!=num2:"${num1}"!="${num2}""
+    num1==num2:45==45
+    ```
+* `n1 -gt n2`:判断`n1`是否大于`n2`
+    ```bash
+    [root@root-aliyun ~]$ num1=45
+    [root@root-aliyun ~]$ [ "${num1}" -gt 15 ] && echo "num1>15:"${num1}">15" || echo "num1<15:"${num1}"<15"
+    num1>15:45>15
+    ```
+* `n1 -lt n2`:判断`n1`是否小于`n2`
+    ```bash
+    [root@root-aliyun ~]$ num3=10
+    [root@root-aliyun ~]$ num1=45
+    [root@root-aliyun ~]$ [ "${num3}" -lt "${num1}" ] && echo "num3<num1:"${num3}"<"${num1}"" || echo "num3>num1:"${num3}">"${num1}""
+    num3<num1:10<45
+    [root@root-aliyun ~]$ num3=100
+    [root@root-aliyun ~]$ [ "${num3}" -lt "${num1}" ] && echo "num3<num1:"${num3}"<"${num1}"" || echo "num3>num1:"${num3}">"${num1}""
+    num3>num1:100>45
+    ```
+* `n1 -ne n2`:判断`n1`是否不等于`n2`
+    ```bash
+    [root@root-aliyun ~]$ num3=100
+    [root@root-aliyun ~]$ num1=45
+    [root@root-aliyun ~]$ [ "${num3}" -ne "${num1}" ] && echo "num3!=num1:"${num3}"!="${num1}"" || echo "num3==num1:"${num3}"=="${num1}""
+    num3!=num1:100!=45
+    [root@root-aliyun ~]$ num3=45
+    [root@root-aliyun ~]$ [ "${num3}" -ne "${num1}" ] && echo "num3!=num1:"${num3}"!="${num1}"" || echo "num3==num1:"${num3}"=="${num1}""
+    num3==num1:45==45
+    ```
+## 字符串比较
+* `str1 == str2`:判断`str1`和`str2`的字符串内容是否一致
+    ```bash
+    [root@root-aliyun ~]$ str1="haha"
+    [root@root-aliyun ~]$ str2="haha"
+    [root@root-aliyun ~]$ [ "${str1}" == "${str2}" ] && echo "str1==str2:"${str1}"=="${str2}"" || echo "str1!=str2:"${str1}"!="${str2}""
+    str1==str2:haha==haha
+    [root@root-aliyun ~]$ str2="lala"
+    [root@root-aliyun ~]$ [ "${str1}" == "${str2}" ] && echo "str1==str2:"${str1}"=="${str2}"" || echo "str1!=str2:"${str1}"!="${str2}""
+    str1!=str2:haha!=lala
+    ```
+* `str1 != str2`:判断`str1`和`str2`的字符串内容是否不一致
+    ```bash
+    [root@root-aliyun ~]$ str1="haha"
+    [root@root-aliyun ~]$ str2="lala"
+    [root@root-aliyun ~]$ [ "${str1}" != "${str2}" ] && echo "str1!=str2:"${str1}"!="${str2}"" || echo "str1==str2:"${str1}"=="${str2}""
+    str1!=str2:haha!=lala
+    [root@root-aliyun ~]$ str2="haha"
+    [root@root-aliyun ~]$ [ "${str1}" != "${str2}" ] && echo "str1!=str2:"${str1}"!="${str2}"" || echo "str1==str2:"${str1}"=="${str2}""
+    str1==str2:haha==haha
+    ```
+# shell脚本格式
+## 格式要求
+* 在`shell`脚本文件**首行**指定执行`shell`的程序以及相关说明
+    ```bash
+    #!/bin/bash
+    # @Time        :2020/6/27 下午8:08
+    # @Author      :passerby223
+    # @Description :
+    ```
+* `shell`脚本**文件后缀**，建议命令为`.sh`
+* 脚本执行失败时，使用`exit`返回**非零值**，来退出程序。
+* 默认缩进4个空格
+* `shell`脚本的命名简单，有意义
+## 注释
+* 单行注释
+    ```bash
+    # 这是单行注释
+    ```
+* 多行注释
+    ```bash
+    echo "start"
+    :<<!
+    shell中用`:<<`后面跟上任意字符来注释多行。
+    echo "哈哈"
+    !
+    echo "stop"
+    ```

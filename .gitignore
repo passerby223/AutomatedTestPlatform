@@ -10,6 +10,7 @@ __pycache__/
 
 # custom files
 .idea
+shell/test.sh
 
 # Distribution / packaging
 .Python
