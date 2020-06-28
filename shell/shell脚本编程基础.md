@@ -459,11 +459,170 @@ greet ${name} ${age} ${gender}
 ```
 # 流程控制
 ## `if`语句
-### 定义
+### 示例一
 ```bash
-if [ 条件 ]; then{
-}
-
-}    
+[root@root-aliyun ~]$ cat process_control_if.sh 
+#!/bin/bash
+# @Time        :2020/6/28 下午11:57
+# @Author      :passerby223
+# @Description :
+read -p "请输入你的年龄>>>" age
+if [ ${age} -gt 60 ]; then
+  echo "年龄大了，玩不动游戏了!"
+elif [ ${age} -gt 18 ]; then
+  echo "成年了，可以去网吧玩游戏了!"
+else
+  echo "还未成年呢，不可以去网吧玩游戏哦!"
 fi
+[root@root-aliyun ~]$ /bin/bash process_control_if.sh 
+请输入你的年龄>>>64
+年龄大了，玩不动游戏了!
+[root@root-aliyun ~]$ /bin/bash process_control_if.sh
+请输入你的年龄>>>21
+成年了，可以去网吧玩游戏了!
+[root@root-aliyun ~]$ /bin/bash process_control_if.sh
+请输入你的年龄>>>15
+还未成年呢，不可以去网吧玩游戏哦!
+```
+### 示例二
+```bash
+[root@root-aliyun ~]$ cat process_control_if.sh      
+#!/bin/bash
+# @Time        :2020/6/28 下午11:57
+# @Author      :passerby223
+# @Description :
+read -p "请输入你的年龄>>>" age
+if [ ${age} -gt 60 ]
+then
+  echo "年龄大了，玩不动游戏了!"
+elif [ ${age} -gt 18 ]
+then
+  echo "成年了，可以去网吧玩游戏了!"
+else
+  echo "还未成年呢，不可以去网吧玩游戏哦!"
+fi
+[root@root-aliyun ~]$ /bin/bash process_control_if.sh
+请输入你的年龄>>>78
+年龄大了，玩不动游戏了!
+[root@root-aliyun ~]$ /bin/bash process_control_if.sh
+请输入你的年龄>>>45
+成年了，可以去网吧玩游戏了!
+[root@root-aliyun ~]$ /bin/bash process_control_if.sh
+请输入你的年龄>>>11
+还未成年呢，不可以去网吧玩游戏哦!
+```
+## `for`循环
+### 格式一
+#### 示例一
+```bash
+[root@root-aliyun ~]$ cat for_loop_test.sh 
+#!/bin/bash
+# @Time        :2020/6/29 上午12:37
+# @Author      :passerby223
+# @Description :
+
+# for循环遍历输出1-10
+max=10
+for ((i = 1; i <= ${max}; i++)); do
+  echo "${i}"
+done
+[root@root-aliyun ~]$ /bin/bash for_loop_test.sh 
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+```
+#### 示例二
+```bash
+[root@root-aliyun ~]$ cat for_loop_test.sh 
+#!/bin/bash
+# @Time        :2020/6/29 上午12:37
+# @Author      :passerby223
+# @Description :
+
+# for循环遍历输出1-10
+max=10
+for ((i = 1; i <= ${max}; i++))
+do
+  echo "${i}"
+done
+[root@root-aliyun ~]$ /bin/bash for_loop_test.sh 
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+```
+### 格式二
+#### 示例一
+```bash
+[root@root-aliyun ~]$ cat for_loop_test1.sh                                                                 
+#!/bin/bash
+# @Time        :2020/6/29 上午12:42
+# @Author      :passerby223
+# @Description :
+
+# shellcheck disable=SC2045
+for i in $(ls /opt); do
+  echo "${i}"
+done
+[root@root-aliyun ~]$ /bin/bash for_loop_test1.sh 
+allure-2.6.0
+baidunetdisk
+cisco
+containerd
+deepinwine
+electron-ssr
+google
+ieaseMusic
+kingsoft
+netease
+teamviewer
+```
+#### 示例二
+```bash
+[root@root-aliyun ~]$ cat for_loop_test1.sh                                                           
+#!/bin/bash
+# @Time        :2020/6/29 上午12:42
+# @Author      :passerby223
+# @Description :
+
+for i in {Python,Java,GO,PHP}
+do
+  echo "${i}"
+done
+[root@root-aliyun ~]$ /bin/bash for_loop_test1.sh                                                           
+Python
+Java
+GO
+PHP
+```
+#### 示例三
+```bash
+[root@root-aliyun ~]$ cat for_loop_test1.sh                                                           
+#!/bin/bash
+# @Time        :2020/6/29 上午12:42
+# @Author      :passerby223
+# @Description :
+
+for i in Python Java GO PHP
+do
+  echo "${i}"
+done
+[root@root-aliyun ~]$ /bin/bash for_loop_test1.sh                                                           
+Python
+Java
+GO
+PHP
 ```
