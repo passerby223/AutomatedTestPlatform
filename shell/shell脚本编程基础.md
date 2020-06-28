@@ -101,8 +101,9 @@
         ```
 ## 内置变量
 * `$0`:获取当前执行的shell脚本文件名,包括脚本路径。
-* `$n`:获取当前执行的shell脚本的第n个参数值，n=1—>9，如果n>9就要用大括号括起来。
+* `$n`:获取当前执行的shell脚本的第n个参数值，`n=1—>9`，如果`n>9`就要用大括号`{}`括起来，如接收第10个参数应该写为`${10}`。
 * `$#`:获取当前shell命令行中参数的总个数
+* `$*`:获取当前shell脚本的所有命令行参数
 * `$?`:获取执行上一个指令的返回值(0为成功，非0为失败)
     * `0`为`成功`
         ```bash
@@ -331,3 +332,138 @@
     !
     echo "stop"
     ```
+# 函数
+## 定义
+* 格式一
+    ```bash
+    函数名()
+    {
+        command1
+        command2
+        ...
+    }   
+    ```
+    ```bash
+    [root@root-aliyun ~]$ cat greet.sh      
+    #!/bin/bash
+    # @Time        :2020/6/28 下午10:21
+    # @Author      :passerby223
+    # @Description :
+    
+    # 声明函数，可以省略函数关键字：function
+    greet() {
+      # 使用`-e`对`\n`进行转义，否则输出不会换行。
+      echo -e "Hello, ${LOGNAME}.\nToday is $(date)"
+    }
+    # 调用函数
+    greet
+    [root@root-aliyun ~]$ /bin/bash greet.sh
+    Hello, wenbin.
+    Today is 2020年 06月 28日 星期日 22:26:49 CST
+    ```
+* 格式二
+    ```bash
+    function 函数名()
+    {
+        command1
+        command2
+        ...
+    }
+    ```
+    ```bash
+    [root@root-aliyun ~]$ cat function1.sh 
+    #!/bin/bash
+    # @Time        :2020/6/28 下午10:07
+    # @Author      :passerby223
+    # @Description :
+    
+    # 声明函数
+    function func1() {
+      # 打印`HelloWord!`
+      echo "HelloWorld!"
+    }
+    # 调用函数
+    func1
+    [root@root-aliyun ~]$ /bin/bash function1.sh 
+    HelloWorld!
+    ```
+## 函数带参数
+* 函数体调用参数
+    ```bash
+    函数名()
+    {
+        函数体 $n
+    }
+    ```
+* 调用函数给函数体传参数
+    ```bash
+    函数名 参数
+    ```
+代码示例
+```bash
+[root@root-aliyun ~]$ cat command_params.sh 
+#!/bin/bash
+# @Time        :2020/6/28 下午10:59
+# @Author      :passerby223
+# @Description :
+
+info() {
+  # 此处的`$1 $2 $3`接受的是函数调用时`info $1 $2 $3`中传递过来的三个参数(也就是函数形参)，在方法体内，如果接收到的参数个数>9,就要用大括号`{}`括起来，如接收第10个参数应该写为`${10}`
+  echo -e "我的名字是:$1\n我的性别是:$2\n我的年龄是:$3"
+}
+echo -e "当前shell脚本名为:$0\n当前shell脚本命令行参数个数为:$#\n当前shell脚本的所有命令行参数为:$*"
+echo "***********************************分割线***********************************"
+# 此处的`$1 $2 $3`接收的是命令行传过来的三个参数
+info $1 $2 $3
+[root@root-aliyun ~]$ bash command_params.sh 小花花 男 18
+当前shell脚本名为:command_params.sh
+当前shell脚本命令行参数个数为:3
+当前shell脚本的所有命令行参数为:小花花 男 18
+***********************************分割线***********************************
+我的名字是:小花花
+我的性别是:男
+我的年龄是:18
+```
+## 函数使用`read`获取用户输入
+* `read`
+* `read value`
+* `read -p prompt value`
+```bash
+[root@root-aliyun ~]$ cat command_input.sh 
+#!/bin/bash
+# @Time        :2020/6/28 下午11:33
+# @Author      :passerby223
+# @Description :
+
+# 使用`read`设置用户输入，使用`-p`打印提示信息,`read`命令后边跟变量来保存用户输入
+read -p "请输入姓名>>>" name
+read -p "请输入年龄>>>" age
+read -p "请输入性别>>>" gender
+echo "***********************************分割线***********************************"
+echo "当前shell脚本名为:$0, 当前shell脚本命令行参数个数为:$#, 当前shell脚本的所有命令行参数为:$*"
+echo "***********************************分割线***********************************"
+greet() {
+  echo -e "你好,我的名字是$1,年龄是$2,性别是$3.\n当前shell脚本名为:$0, 当前greet()方法接收到的实参个数为:$#个, 当前greet()方法接收到的实参分别为:$*"
+}
+# 调用函数并传参
+greet ${name} ${age} ${gender}
+[root@root-aliyun ~]$ bash command_input.sh
+请输入姓名>>>小花花
+请输入年龄>>>18
+请输入性别>>>女
+***********************************分割线***********************************
+当前shell脚本名为:command_input.sh, 当前shell脚本命令行参数个数为:0, 当前shell脚本的所有命令行参数为:
+***********************************分割线***********************************
+你好,我的名字是小花花,年龄是18,性别是女.
+当前shell脚本名为:command_input.sh, 当前greet()方法接收到的实参个数为:3个, 当前greet()方法接收到的实参分别为:小花花 18 女
+```
+# 流程控制
+## `if`语句
+### 定义
+```bash
+if [ 条件 ]; then{
+}
+
+}    
+fi
+```
