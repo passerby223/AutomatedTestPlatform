@@ -251,20 +251,20 @@
     文件不存在
     ```
 ## 数值操作符
-* `n1 -eq n2`:判断`n1`和`n2`是否相等
+* `n1 -eq n2`:判断**n1**和**n2**是否`相等`
     ```bash
     [root@root-aliyun ~]$ num1=45
     [root@root-aliyun ~]$ num2=45
     [root@root-aliyun ~]$ [ "${num1}" -eq "${num2}" ] && echo "num1==num2:"${num1}"=="${num2}"" || echo "num1!=num2:"${num1}"!="${num2}""
     num1==num2:45==45
     ```
-* `n1 -gt n2`:判断`n1`是否大于`n2`
+* `n1 -gt n2`:判断**n1**是否`>`**n2**,其中`g`是指`greater`
     ```bash
     [root@root-aliyun ~]$ num1=45
     [root@root-aliyun ~]$ [ "${num1}" -gt 15 ] && echo "num1>15:"${num1}">15" || echo "num1<15:"${num1}"<15"
     num1>15:45>15
     ```
-* `n1 -lt n2`:判断`n1`是否小于`n2`
+* `n1 -lt n2`:判断**n1**是否`<`**n2**,其中`l`是指`less`
     ```bash
     [root@root-aliyun ~]$ num3=10
     [root@root-aliyun ~]$ num1=45
@@ -274,7 +274,7 @@
     [root@root-aliyun ~]$ [ "${num3}" -lt "${num1}" ] && echo "num3<num1:"${num3}"<"${num1}"" || echo "num3>num1:"${num3}">"${num1}""
     num3>num1:100>45
     ```
-* `n1 -ne n2`:判断`n1`是否不等于`n2`
+* `n1 -ne n2`:判断**n1**是否`!=`**n2**
     ```bash
     [root@root-aliyun ~]$ num3=100
     [root@root-aliyun ~]$ num1=45
@@ -284,6 +284,8 @@
     [root@root-aliyun ~]$ [ "${num3}" -ne "${num1}" ] && echo "num3!=num1:"${num3}"!="${num1}"" || echo "num3==num1:"${num3}"=="${num1}""
     num3==num1:45==45
     ```
+* `n1 -ge n2`:判断**n1**是否`>=`**n2**
+* `n1 -le n2`:判断**n1**是否`<=`**n2**
 ## 字符串比较
 * `str1 == str2`:判断`str1`和`str2`的字符串内容是否一致
     ```bash
@@ -625,4 +627,104 @@ Python
 Java
 GO
 PHP
+```
+## `while`循环
+只要条件满足，就一直循环
+```bash
+[root@root-aliyun ~]$ cat while_loop.sh      
+#!/bin/bash
+# @Time        :2020/6/30 上午12:23
+# @Author      :passerby223
+# @Description :
+
+# 获取用户输入
+read -p "请输入一个数字>>>" num
+
+# 定义数字累加函数
+function countNum() {
+  num_count=0
+  n=1
+  while [ $n -lt $(($1 + 1)) ]; do
+    num_count=$(($n + $num_count))
+    n=$(($n + 1))
+  done
+  echo "从1累加到$1的结果为：$num_count"
+}
+
+# 调用countNum函数并传入用户输入的实参：num
+countNum $num
+[root@root-aliyun ~]$ /bin/bash while_loop.sh
+请输入一个数字>>>100
+从1累加到100的结果为：5050
+```
+## `until`循环
+只要条件不满足，就一直循环
+```bash
+[root@root-aliyun ~]$ cat until_loop.sh         
+#!/bin/bash
+# @Time        :2020/6/30 上午12:54
+# @Author      :passerby223
+# @Description :
+
+# 获取用户输入
+read -p "请输入一个数字>>>" num
+
+# 定义数字累加函数
+function countNum() {
+  num_count=0
+  i=$1
+  until [ $i -lt 1 ]; do
+    num_count=$(($num_count + $i))
+    i=$(($i - 1))
+  done
+  echo "从1累加到$1的结果为：$num_count"
+}
+
+# 调用countNum函数并传入用户输入的实参：num
+countNum $num
+[root@root-aliyun ~]$ /bin/bash until_loop.sh
+请输入一个数字>>>100
+从1累加到100的结果为：5050
+```
+## `case`语句
+`*`是指其它`pattern`都不满足的情况下会被执行
+### 用**case**语句编写**一个支持数字加减乘除四则运算**的程序
+* 执行脚本时，输入数字表达式，如:`/bin/bash case_num_count.sh 3 \* 3`,程序会自动打印计算结果
+```bash
+[root@root-aliyun ~]$ cat case_num_count.sh                
+#!/bin/bash
+# @Time        :2020/6/30 上午1:14
+# @Author      :passerby223
+# @Description :
+
+if [ ! $# -eq 3 ]; then
+  echo -e "Usge:\n $0 num1 +|-|*|/ num2"
+  exit 1
+fi
+
+case $2 in
++)
+  echo "$1+$3=$(($1 + $3))"
+  ;;
+-)
+  echo "$1-$3=$(($1 - $3))"
+  ;;
+\*)
+  echo "$1*$3=$(($1 * $3))"
+  ;;
+/)
+  echo "$1/$3=$(($1 / $3))"
+  ;;
+*)
+  echo "输入格式有误!未匹配到运算符!"
+  ;;
+esac
+[root@root-aliyun ~]$ /bin/bash  case_num_count.sh 12 + 4 
+12+4=16
+[root@root-aliyun ~]$ /bin/bash  case_num_count.sh 12 - 4
+12-4=8
+[root@root-aliyun ~]$ /bin/bash  case_num_count.sh 12 \* 4
+12*4=48
+[root@root-aliyun ~]$ /bin/bash  case_num_count.sh 12 / 4 
+12/4=3
 ```
