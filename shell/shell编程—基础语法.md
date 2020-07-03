@@ -698,7 +698,7 @@ countNum $num
 # @Description :
 
 if [ ! $# -eq 3 ]; then
-  echo -e "Usge:\n $0 num1 +|-|*|/ num2"
+  echo -e "Usage:\n $0 num1 +|-|*|/ num2"
   exit 1
 fi
 
