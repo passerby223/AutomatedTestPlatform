@@ -559,4 +559,82 @@ The older README is available here.
      9	This README documents the new method to install macOS. 
     10	The older README is available here.
 ```
+## awk
+* 文本和数据进行处理的编程语言。
+* awk 是一种编程语言，用于在linux/unix下对文本和数据进行处理。数据可以来自标准输入(stdin)、一个或多个文件，或其它命令的输出。它支持用户自定义函数和动态正则表达式等先进功能，是linux/unix下的一个强大编程工具。它在命令行中使用，但更多是作为脚本来使用。awk有很多内建的功能，比如数组、函数等，这是它和C语言的相同之处，灵活性是awk最大的优势。
+* `awk --help`查看帮助文档
+```bash
+[root@aliyun ~]$ awk --help
+Usage: awk [POSIX or GNU style options] -f progfile [--] file ...
+Usage: awk [POSIX or GNU style options] [--] 'program' file ...
+POSIX options:		GNU long options: (standard)
+	-f progfile		--file=progfile
+	-F fs			--field-separator=fs
+	-v var=val		--assign=var=val
+Short options:		GNU long options: (extensions)
+	-b			--characters-as-bytes
+	-c			--traditional
+	-C			--copyright
+	-d[file]		--dump-variables[=file]
+	-e 'program-text'	--source='program-text'
+	-E file			--exec=file
+	-g			--gen-pot
+	-h			--help
+	-L [fatal]		--lint[=fatal]
+	-n			--non-decimal-data
+	-N			--use-lc-numeric
+	-O			--optimize
+	-p[file]		--profile[=file]
+	-P			--posix
+	-r			--re-interval
+	-S			--sandbox
+	-t			--lint-old
+	-V			--version
 
+To report bugs, see node `Bugs' in `gawk.info', which is
+section `Reporting Problems and Bugs' in the printed version.
+
+gawk is a pattern scanning and processing language.
+By default it reads standard input and writes standard output.
+
+Examples:
+	gawk '{ sum += $1 }; END { print sum }' file
+	gawk -F: '{ print $1 }' /etc/passwd
+```
+* 用法
+    * `awk 'BEGIN{} pattern {commands} END{}' filename`
+    
+        |  格式   | 含义  |
+        |  :----:  | :----:  |
+        | BEGIN{}  | 处理数据之前执行 |
+        | pattern  | 匹配模式 |
+        | {commands}  | 处理的命令 |
+        | END{}  | 处理数据之后执行 |
+    
+    * `some command | grep [option] [pattern]`
+
+### 内置变量
+
+|  内置变量   | 含义  |
+|  :----:  | :----:  |
+| $0  | 整行内容 |
+| $1~$n  | 当前行的第1~n个字段 |
+| NF(Number Field)  | 当前行字段数 |
+| NR(Number Row)  | 当前行行号，从1开始 |
+| FS(Field Separator)  | 输入字段分隔符,默认为空格或tab键 |
+| RS(Row Separator)  | 输入行分隔符,默认为回车符 |
+| OFS(Output Field Separator)  | 输出字段分隔符,默认为空格 |
+| ORS(Output Row Separator)  | 输出行分隔符,默认为回车符 |
+
+### `printf`格式符
+
+|  格式符   | 含义  |
+|  :----:  | :----:  |
+| %s  | 字符串 |
+| %d  | 十进制数 |
+| %f  | 浮点数 |
+
+|  修饰符   | 含义  |
+|  :----:  | :----:  |
+| +  | 右对齐 |
+| -  | 左对齐 |
