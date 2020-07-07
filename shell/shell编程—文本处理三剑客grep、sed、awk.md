@@ -106,6 +106,7 @@ wenbin existed
 ```
 
 ## sed
+* `sed`默认是对文本以`行`为单位进行处理的。
 * 流编辑器,对文本逐行进行处理
 * `sed --help`查看`sed`命令帮助文档
     ```bash
@@ -560,6 +561,7 @@ The older README is available here.
     10	The older README is available here.
 ```
 ## awk
+* `awk`默认是对文本以`列`为单位进行处理的。
 * 文本和数据进行处理的编程语言。
 * awk 是一种编程语言，用于在linux/unix下对文本和数据进行处理。数据可以来自标准输入(stdin)、一个或多个文件，或其它命令的输出。它支持用户自定义函数和动态正则表达式等先进功能，是linux/unix下的一个强大编程工具。它在命令行中使用，但更多是作为脚本来使用。awk有很多内建的功能，比如数组、函数等，这是它和C语言的相同之处，灵活性是awk最大的优势。
 * `awk --help`查看帮助文档
@@ -638,3 +640,353 @@ Examples:
 |  :----:  | :----:  |
 | +  | 右对齐 |
 | -  | 左对齐 |
+### `awk`命令用法示例
+* `awk`默认以`空格(文本内容每行可以是不规则个数的空格)`或`tab(文本内容每行可以是不规则个数的tab)`键对文本进行提取
+```bash
+[root@aliyun ~]$ cat -n info.txt          
+     1	name	                  gender	age	love
+     2	Jack	      male	45	    Python
+     3	xiaohong        	male	22	Java
+     4	xiaohuamale 		female	15	PHP
+     5	xiaozhang			male	21	Go
+[root@aliyun ~]$ awk '{print $0}' info.txt
+name	                  gender	age	love
+Jack	      male	45	    Python
+xiaohong        	male	22	Java
+xiaohuamale 		female	15	PHP
+xiaozhang			male	21	Go
+[root@aliyun ~]$ awk '{print $1}' info.txt
+name
+Jack
+xiaohong
+xiaohuamale
+xiaozhang
+[root@aliyun ~]$ awk '{print $2}' info.txt
+gender
+male
+male
+female
+male
+[root@aliyun ~]$ awk '{print $3}' info.txt
+age
+45
+22
+15
+21
+[root@aliyun ~]$ awk '{print $4}' info.txt
+love
+Python
+Java
+PHP
+Go
+```
+* 打印**文本每一行**的**字段个数**
+```bash
+[root@aliyun ~]$ cat -n info.txt 
+     1	name	                  gender	age	love
+     2	Jack	      male	45	    Python
+     3	xiaohong        	male	22	Java
+     4	xiaohuamale 		female	15	PHP
+     5	xiaozhang			male	21	Go
+[root@aliyun ~]$ awk '{print NF}' info.txt
+4
+4
+4
+4
+4
+```
+* 打印**文本每一行**的**行号**
+```bash
+[root@aliyun ~]$ cat -n info.txt          
+     1	name	                  gender	age	love
+     2	Jack	      male	45	    Python
+     3	xiaohong        	male	22	Java
+     4	xiaohuamale 		female	15	PHP
+     5	xiaozhang			male	21	Go
+[root@aliyun ~]$ awk '{print NR}' info.txt
+1
+2
+3
+4
+5
+```
+* 打印文本**每行最后一列**的内容
+```bash
+[root@aliyun ~]$ cat -n info.txt 
+     1	name	                  gender	age	love
+     2	Jack	      male	45	    Python C语言
+     3	xiaohong        	male	22	Java
+     4	xiaohuamale 		female	15	PHP
+     5	xiaozhang			male	21	Go
+[root@aliyun ~]$ awk '{print $NF}' info.txt
+love
+C语言
+Java
+PHP
+Go
+```
+* 指定输入字段分隔符`:`并打印文本每一行的第一列内容、第二列内容、最后一列内容、最后一列的前一列的内容
+```bash
+[root@aliyun ~]$ cat -n passwd.log 
+     1	root:x:0:0:root:/root:/bin/bash
+     2	daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+     3	bin:x:2:2:bin:/bin:/usr/sbin/nologin
+     4	sys:x:3:3:sys:/dev:/usr/sbin/nologin
+     5	sync:x:4:65534:sync:/bin:/bin/sync
+     6	games:x:5:60:games:/usr/games:/usr/sbin/nologin
+     7	man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+     8	lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+     9	mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+    10	news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+    11	uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+    12	proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+    13	www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+    14	backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+    15	list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+    16	irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+    17	list:x:40:40:Phone List Manager:/var/list:/usr/sbin/nologin
+    18	gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+    19	nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+    20	systemd-network:x:100:102:systemd Network Management,,,:/run/systemd/netif:/usr/sbin/nologin
+[root@aliyun ~]$ awk 'BEGIN{FS=":"} {print $1}' passwd.log 
+root
+daemon
+bin
+sys
+sync
+games
+man
+lp
+mail
+news
+uucp
+proxy
+www-data
+backup
+list
+irc
+list
+gnats
+nobody
+systemd-network
+[root@aliyun ~]$ awk 'BEGIN{FS=":"} {print $2}' passwd.log
+x
+x
+x
+x
+x
+x
+x
+x
+x
+x
+x
+x
+x
+x
+x
+x
+x
+x
+x
+x
+[root@aliyun ~]$ awk 'BEGIN{FS=":"} {print $NF}' passwd.log
+/bin/bash
+/usr/sbin/nologin
+/usr/sbin/nologin
+/usr/sbin/nologin
+/bin/sync
+/usr/sbin/nologin
+/usr/sbin/nologin
+/usr/sbin/nologin
+/usr/sbin/nologin
+/usr/sbin/nologin
+/usr/sbin/nologin
+/usr/sbin/nologin
+/usr/sbin/nologin
+/usr/sbin/nologin
+/usr/sbin/nologin
+/usr/sbin/nologin
+/usr/sbin/nologin
+/usr/sbin/nologin
+/usr/sbin/nologin
+/usr/sbin/nologin
+[root@aliyun ~]$ awk 'BEGIN{FS=":"} {print $(NF-1)}' passwd.log
+/root
+/usr/sbin
+/bin
+/dev
+/bin
+/usr/games
+/var/cache/man
+/var/spool/lpd
+/var/mail
+/var/spool/news
+/var/spool/uucp
+/bin
+/var/www
+/var/backups
+/var/list
+/var/run/ircd
+/var/list
+/var/lib/gnats
+/nonexistent
+/run/systemd/netif
+```
+* 使用`printf`美化输出
+```bash
+[root@aliyun ~]$ cat -n passwd.log 
+     1	root:x:0:0:root:/root:/bin/bash
+     2	daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+     3	bin:x:2:2:bin:/bin:/usr/sbin/nologin
+     4	sys:x:3:3:sys:/dev:/usr/sbin/nologin
+     5	sync:x:4:65534:sync:/bin:/bin/sync
+     6	games:x:5:60:games:/usr/games:/usr/sbin/nologin
+     7	man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+     8	lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+     9	mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+    10	news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+    11	uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+    12	proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+    13	www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+    14	backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+    15	list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+    16	irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+    17	list:x:40:40:Phone List Manager:/var/list:/usr/sbin/nologin
+    18	gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+    19	nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+    20	systemd-network:x:100:102:systemd Network Management,,,:/run/systemd/netif:/usr/sbin/nologin
+# 格式化输出为字符串，左对齐输出(长度一共为20)
+[root@aliyun ~]$ awk 'BEGIN{FS=":"} {printf "%-20s%-20s\n", $1, $NF}' passwd.log
+root                /bin/bash           
+daemon              /usr/sbin/nologin   
+bin                 /usr/sbin/nologin   
+sys                 /usr/sbin/nologin   
+sync                /bin/sync           
+games               /usr/sbin/nologin   
+man                 /usr/sbin/nologin   
+lp                  /usr/sbin/nologin   
+mail                /usr/sbin/nologin   
+news                /usr/sbin/nologin   
+uucp                /usr/sbin/nologin   
+proxy               /usr/sbin/nologin   
+www-data            /usr/sbin/nologin   
+backup              /usr/sbin/nologin   
+list                /usr/sbin/nologin   
+irc                 /usr/sbin/nologin   
+list                /usr/sbin/nologin   
+gnats               /usr/sbin/nologin   
+nobody              /usr/sbin/nologin   
+systemd-network     /usr/sbin/nologin   
+# 格式化输出为字符串，右对齐输出(长度一共为20)
+[root@aliyun ~]$ awk 'BEGIN{FS=":"} {printf "%20s%20s\n", $1, $NF}' passwd.log
+                root           /bin/bash
+              daemon   /usr/sbin/nologin
+                 bin   /usr/sbin/nologin
+                 sys   /usr/sbin/nologin
+                sync           /bin/sync
+               games   /usr/sbin/nologin
+                 man   /usr/sbin/nologin
+                  lp   /usr/sbin/nologin
+                mail   /usr/sbin/nologin
+                news   /usr/sbin/nologin
+                uucp   /usr/sbin/nologin
+               proxy   /usr/sbin/nologin
+            www-data   /usr/sbin/nologin
+              backup   /usr/sbin/nologin
+                list   /usr/sbin/nologin
+                 irc   /usr/sbin/nologin
+                list   /usr/sbin/nologin
+               gnats   /usr/sbin/nologin
+              nobody   /usr/sbin/nologin
+     systemd-network   /usr/sbin/nologin
+# 格式化输出为字符串，右对齐输出(长度一共为20)
+[root@aliyun ~]$ awk 'BEGIN{FS=":"} {printf "%20s\n", $4}' passwd.log 
+                   0
+                   1
+                   2
+                   3
+               65534
+                  60
+                  12
+                   7
+                   8
+                   9
+                  10
+                  13
+                  33
+                  34
+                  38
+                  39
+                  40
+                  41
+               65534
+                 102
+# 格式化输出为十进制数字，右对齐输出(长度一共为20)，`+20`中的`+`可以省略
+[root@aliyun ~]$ awk 'BEGIN{FS=":"} {printf "%20d\n", $4}' passwd.log
+                   0
+                   1
+                   2
+                   3
+               65534
+                  60
+                  12
+                   7
+                   8
+                   9
+                  10
+                  13
+                  33
+                  34
+                  38
+                  39
+                  40
+                  41
+               65534
+                 102
+# 格式化输出为浮点数默认保留6位小数，右对齐输出(长度一共为20)
+[root@aliyun ~]$ awk 'BEGIN{FS=":"} {printf "%20f\n", $4}' passwd.log
+            0.000000
+            1.000000
+            2.000000
+            3.000000
+        65534.000000
+           60.000000
+           12.000000
+            7.000000
+            8.000000
+            9.000000
+           10.000000
+           13.000000
+           33.000000
+           34.000000
+           38.000000
+           39.000000
+           40.000000
+           41.000000
+        65534.000000
+# 格式化输出为浮点数并保留2位小数，右对齐输出(长度一共为20)
+[root@aliyun ~]$ awk 'BEGIN{FS=":"} {printf "%20.2f\n", $4}' passwd.log
+                0.00
+                1.00
+                2.00
+                3.00
+            65534.00
+               60.00
+               12.00
+                7.00
+                8.00
+                9.00
+               10.00
+               13.00
+               33.00
+               34.00
+               38.00
+               39.00
+               40.00
+               41.00
+            65534.00
+              102.00
+```
+
+
