@@ -988,5 +988,79 @@ systemd-network     /usr/sbin/nologin
             65534.00
               102.00
 ```
-
-
+* 使用`pattern`匹配
+```bash
+[root@aliyun ~]$ cat -n passwd.log                                                     
+     1	root:x:0:0:root:/root:/bin/bash
+     2	daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+     3	bin:x:2:2:bin:/bin:/usr/sbin/nologin
+     4	sys:x:3:3:sys:/dev:/usr/sbin/nologin
+     5	sync:x:4:65534:sync:/bin:/bin/sync
+     6	games:x:5:60:games:/usr/games:/usr/sbin/nologin
+     7	man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+     8	lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+     9	mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+    10	news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+    11	uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+    12	proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+    13	www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+    14	backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+    15	list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+    16	irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+    17	list:x:40:40:Phone List Manager:/var/list:/usr/sbin/nologin
+    18	gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+    19	nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+    20	systemd-network:x:100:102:systemd Network Management,,,:/run/systemd/netif:/usr/sbin/nologin
+[root@aliyun ~]$ awk 'BEGIN{FS=":"} /mail/ {printf "%-20s%-20s\n", $1, $NF}' passwd.log
+mail                /usr/sbin/nologin   
+[root@aliyun ~]$ awk 'BEGIN{FS=":"} /^mail/,/proxy/ {printf "%-20s%-20s\n", $1, $NF}' passwd.log
+mail                /usr/sbin/nologin   
+news                /usr/sbin/nologin   
+uucp                /usr/sbin/nologin   
+proxy               /usr/sbin/nologin   
+[root@aliyun ~]$ awk 'BEGIN{FS=":"} /^mail/,/proxy/ {printf "%-20s%-20s\n", $1, $NF}' passwd.log | wc -l
+4
+[root@aliyun ~]$ awk 'BEGIN{FS=":"} $4 > 100 {printf "%-20s%-20s%-20s\n", $1, $4, $NF}' passwd.log        
+sync                65534               /bin/sync           
+nobody              65534               /usr/sbin/nologin   
+systemd-network     102                 /usr/sbin/nologin
+# $6 ~ "/bin"：文本的每行第6列是`/bin`字符串
+[root@aliyun ~]$ awk 'BEGIN{FS=":"} $6 == "/bin" {printf "%-20s%-20s%-20s\n", $1, $6, $NF}' passwd.log 
+bin                 /bin                /usr/sbin/nologin   
+sync                /bin                /bin/sync           
+proxy               /bin                /usr/sbin/nologin 
+# $6 ~ "/bin"：文本的每行第6列包含`/bin`字符串
+[root@aliyun ~]$ awk 'BEGIN{FS=":"} $6 ~ "/bin" {printf "%-20s%-20s%-20s\n", $1, $6, $NF}' passwd.log
+bin                 /bin                /usr/sbin/nologin   
+sync                /bin                /bin/sync           
+proxy               /bin                /usr/sbin/nologin
+```
+* 统计文本中以`:`进行分割的第6列中包含`/bin`的行的数量并使用变量`count`保存输出
+```bash
+[root@aliyun ~]$ cat -n passwd.log                                                                                                              
+     1	root:x:0:0:root:/root:/bin/bash
+     2	daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+     3	bin:x:2:2:bin:/bin:/usr/sbin/nologin
+     4	sys:x:3:3:sys:/dev:/usr/sbin/nologin
+     5	sync:x:4:65534:sync:/bin:/bin/sync
+     6	games:x:5:60:games:/usr/games:/usr/sbin/nologin
+     7	man:x:6:12:man:/var/cache/man:/usr/sbin/nologin
+     8	lp:x:7:7:lp:/var/spool/lpd:/usr/sbin/nologin
+     9	mail:x:8:8:mail:/var/mail:/usr/sbin/nologin
+    10	news:x:9:9:news:/var/spool/news:/usr/sbin/nologin
+    11	uucp:x:10:10:uucp:/var/spool/uucp:/usr/sbin/nologin
+    12	proxy:x:13:13:proxy:/bin:/usr/sbin/nologin
+    13	www-data:x:33:33:www-data:/var/www:/usr/sbin/nologin
+    14	backup:x:34:34:backup:/var/backups:/usr/sbin/nologin
+    15	list:x:38:38:Mailing List Manager:/var/list:/usr/sbin/nologin
+    16	irc:x:39:39:ircd:/var/run/ircd:/usr/sbin/nologin
+    17	list:x:40:40:Phone List Manager:/var/list:/usr/sbin/nologin
+    18	gnats:x:41:41:Gnats Bug-Reporting System (admin):/var/lib/gnats:/usr/sbin/nologin
+    19	nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+    20	systemd-network:x:100:102:systemd Network Management,,,:/run/systemd/netif:/usr/sbin/nologin
+[root@aliyun ~]$ awk 'BEGIN{FS=":"} $6 ~ "/bin" {count++; printf "%-20s%-20s\n", $6, $NF} END{printf "%-20s%-20s\n", "Total", count}' passwd.log
+/bin                /usr/sbin/nologin   
+/bin                /bin/sync           
+/bin                /usr/sbin/nologin   
+Total               3                   
+```
