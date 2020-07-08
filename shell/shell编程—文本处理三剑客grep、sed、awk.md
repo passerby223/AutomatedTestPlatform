@@ -1064,3 +1064,26 @@ proxy               /bin                /usr/sbin/nologin
 /bin                /usr/sbin/nologin   
 Total               3                   
 ```
+* `awk`脚本示例
+```bash
+[root@aliyun ~]$ cat info.awk   
+BEGIN{
+    FS=":"
+    printf "%-20s%-20s\n", "user", "shell"
+}
+{
+    if ($6 ~ "/bin")
+        {
+            count++; printf "%-20s%-20s\n", $1, $NF
+        }
+}
+END{
+printf "%-20s%-20s\n", "Total", count
+}
+[root@aliyun ~]$ awk -f info.awk ~/passwd.log 
+user                shell               
+bin                 /usr/sbin/nologin   
+sync                /bin/sync           
+proxy               /usr/sbin/nologin   
+Total               3
+```
