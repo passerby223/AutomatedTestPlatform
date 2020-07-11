@@ -1,12 +1,24 @@
-# FROM是必须的，必须有一个基镜像
+# FROM:必须项，必须有一个基镜像，代表当前新镜像是基于哪个镜像的
 FROM python:3
-# LABEL标签的内容不会执行，会被当做Dockerfile文件的配置信息
-LABEL maintainer='anonymous'
+# LABEL：用于为镜像添加元数据，元数以键值对的形式指定
+LABEL maintainer='1912315910@qq.com'
 LABEL description='flask project deploy whit dockerfile'
-# WORKDIR
+# WORKDIR:指定工作目录
 WORKDIR /usr/src/app
-
-
+# ADD：自动解压缩压缩包，并copy到工作目录
 ADD ./watchlist.tar.gz ./
-
 WORKDIR watchlist/
+# RUN：RUN 指令是用来执行命令行命令的
+RUN echo 'SECRET_KEY=88da9b29d97e4d33885b59f88600982c\nDATABASE_FILE=data-prod.db' >> ./.env \
+    && pip install -i https://pypi.doubanio.com/simple -r requirements.txt \
+    && flask initdb
+# VOLUME：定义容器数据卷
+VOLUME /usr/src/app/watchlist
+# EXPOSE 指令是声明运行时容器提供服务端口，这只是一个声明，在运行时并不会因为这个声明应用就会开启这个端口的服务。
+EXPOSE 5000
+# CMD：容器启动命令
+CMD [ "uwsgi", "--socket", "0.0.0.0:5000", "--protocol=http", "-p", "3", "-w", "watchlist:app"]
+# 在当前Docker目录下通过此Dockerfile构建image：docker build -f flask_project_deploy_with_Dockerfile -t watchlist_app .
+# 以前台形式启动容器：docker run --name watchlist_app_containter -d -p 12306:5000 watchlist_app
+# 查看容器启动服务生成的所有日志：docker logs 已启动容器的ID
+# 实时查看容器启动服务的日志(-f:实时查看日志, -t:显示时间戳)：docker logs -ft 已启动容器的ID
