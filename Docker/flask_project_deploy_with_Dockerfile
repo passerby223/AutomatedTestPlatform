@@ -1,5 +1,9 @@
+# FROM是必须的，必须有一个基镜像
 FROM python:3
-
+# LABEL标签的内容不会执行，会被当做Dockerfile文件的配置信息
+LABEL maintainer='anonymous'
+LABEL description='flask project deploy whit dockerfile'
+# WORKDIR
 WORKDIR /usr/src/app
 
 
