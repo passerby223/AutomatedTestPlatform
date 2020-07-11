@@ -19,6 +19,6 @@ EXPOSE 5000
 # CMD：容器启动命令
 CMD [ "uwsgi", "--socket", "0.0.0.0:5000", "--protocol=http", "-p", "3", "-w", "watchlist:app"]
 # 在当前Docker目录下通过此Dockerfile构建image：docker build -f flask_project_deploy_with_Dockerfile -t watchlist_app .
-# 以前台形式启动容器：docker run --name watchlist_app_containter -d -p 12306:5000 watchlist_app
+# 以前台形式启动容器：docker run --name watchlist_app_containter -d -p 7000:5000 watchlist_app
 # 查看容器启动服务生成的所有日志：docker logs 已启动容器的ID
 # 实时查看容器启动服务的日志(-f:实时查看日志, -t:显示时间戳)：docker logs -ft 已启动容器的ID
